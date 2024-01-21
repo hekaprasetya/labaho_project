@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id_pesanan = $config->insert_id;
             // INSERT tbl_jadwal
             $tbl = 'tbl_jadwal';
-            $columnString = "tanggal_berangkat, tanggal_kembali, rincian, nomor_pemesanan";
+            $columnString = "tanggal_berangkat, tanggal_kembali, rincian, nomor_pesanan";
             $setValues = [$tanggal_berangkat, $tanggal_kembali, $rincian];
             $params = array_merge($setValues, array($id_pesanan));
 
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = mysqli_query($config, "UPDATE tbl_pesanan SET status_pesanan = '$status' WHERE id ='$nomor_pemesanan'");
         if ($query == TRUE) {
             $tbl = 'tbl_pembayaran';
-            $columnString = "metode_pembayaran, jumlah, nomor_pemesanan";
+            $columnString = "metode_pembayaran, jumlah, nomor_pesanan";
             $setValues = [$metode_pembayaran, $jumlah];
             $params = array_merge($setValues, array($nomor_pemesanan));
         }

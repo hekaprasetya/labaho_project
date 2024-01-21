@@ -72,22 +72,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-                                            <?php
-                                            // menambahkan untuk variabel query untuk mencari
-                                            $query_apar = "SELECT
-                                            a.*,
-                                            a.id as id_booking,
-                                            b.pelanggan,
-                                            c.nama_paket,
-                                            d.nomor_pemesanan as id_pembayaran
-                                        FROM
-                                            tbl_pesanan a
-                                        JOIN
-                                            tbl_pelanggan b ON a.id_pelanggan = b.id
-                                        JOIN
-                                            tbl_paket_wisata c ON a.id_paket = c.id
-                                        LEFT JOIN tbl_pembayaran d ON a.id = d.nomor_pemesanan ";
+                            <?php
+                            // menambahkan untuk variabel query untuk mencari
+                            $query_apar = "SELECT
+                            a.*,
+                            a.id as id_booking,
+                            b.pelanggan,
+                            c.nama_paket,
+                            d.nomor_pesanan as id_pembayaran
+                            FROM
+                                tbl_pesanan a
+                            LEFT JOIN
+                                tbl_pelanggan b ON a.id_pelanggan = b.id
+                            LEFT JOIN
+                                tbl_paket_wisata c ON a.id_paket = c.id
+                            LEFT JOIN tbl_pembayaran d ON a.id = d.nomor_pesanan ";
                                             // membuat varibel untuk mengambil data
                                 if (isset($_REQUEST['submit'])) {
                                     $cari = mysqli_real_escape_string($config, $_REQUEST['cari']);
@@ -108,30 +107,35 @@
                                                     $id = $row['id'];
                                                     $booking->id = $row['id'];
                                                     ?>
-                                                            <tr>
-                                                                <td><?= $no ?></td>
-                                                                <?php
-                                                                foreach ($isi_row as $kolom) {
-                                                                    if($kolom == "status_pesanan") {
-                                                                        echo ($row[$kolom] == "Pending") ?'<td class="red-text">'. $row[$kolom] .'</td>' : '<td class="green-text">'. $row[$kolom] .'</td>';
-                                                                    } else {
-                                                                        ?> <td><?= $row[$kolom] ?></td>  <?php
-                                                                    }
-                                                                }
-                                                                  //** PEMBAYARAN
-                                                                  if (is_null($row['id_pembayaran'])) {
-                                                                    ?>
-                                                                    <td>
-                                                                        <button type="button" class="btn small red waves-effect waves-light tooltipped" data-position="left" data-tooltip="Konformasi Pembayaran" onclick="bayar(<?= $id ?>)">
-                                                                        <i class="material-icons">warning</i></button>
-                                                                    </td>
-                                                                    <?php
-                                                                } else {
-                                                                    ?>
-                                                                    <td><?= $booking->crud(); ?></td>
-                                                                    <?php
-                                                                } ?>
-                                                            </tr>
+                                                    <tr>
+                                                        <td><?= $no ?></td>
+                                                        <?php
+                                                        foreach ($isi_row as $kolom) {
+                                                            if($kolom == "status_pesanan") {
+                                                                echo ($row[$kolom] == "Pending") ?'<td class="red-text">'. $row[$kolom] .'</td>' : '<td class="green-text">'. $row[$kolom] .'</td>';
+                                                            } else {
+                                                                ?> <td><?= $row[$kolom] ?></td>  <?php
+                                                            }
+                                                        }
+                                                            //** PEMBAYARAN
+                                                            if (is_null($row['id_pembayaran'])) {
+                                                            ?>
+                                                            <td>
+                                                                <button type="button" class="btn small red waves-effect waves-light tooltipped" data-position="left" data-tooltip="Konformasi Pembayaran" onclick="bayar(<?= $id ?>)">
+                                                                <i class="material-icons">warning</i></button>
+                                                            </td>
+                                                            <?php
+                                                        } else {
+                                                            ?>
+                                                            <td>
+                                                            <a class="btn small blue darken-1  waves-effect waves-light tooltipped" data-position="left" data-tooltip="Edit"
+                                                            href="?page=<?= $booking->pg_name ?>&act=edit&id=<?= $booking->id ?>">
+                                                            <i class="material-icons">edit</i></a>
+                                                        <button onclick="deleteData(<?= $row['id'].','.$row['id_pelanggan'].','.$row['id_paket'] ?>)" class="btn small deep-orange waves-effect waves-light tooltipped" data-position="left" data-tooltip="Hapus">
+                                                            <i class="material-icons">delete</i></button></td>
+                                                            <?php
+                                                        } ?>
+                                                    </tr>
                                                     <?php
                                                     $no++;
                                                 }
@@ -143,13 +147,14 @@
                                     </table>
                                     <?= $booking->pagging($conn, $limit, $pg) ?>
                                 </div> 
-                                </div><?php } ?>
+                                </div>
+                                <!-- script konfirmasi pembayaran -->
                                 <script>
                                   function bayar(id) {
                                     Swal.fire({
                                         title: "Konfirmasi Pembayaran",
                                         html:
-                                        '<select id="swal-input2" class="browser-default validate" >' +
+                                        '<select id="swal-input2" class="browser-default validate" required>' +
                                         '<option value="" disabled selected>Metode Pembayaran</option>' +
                                         '<optgroup label="Transfer Bank">' +
                                         '<option value="BCA">BCA</option>' +
@@ -163,12 +168,15 @@
                                         '<option value="Gopay">Gopay</option>' +
                                         '</optgroup>' +
                                         '</select>'+
-                                        '<input type="number" placeholder="Jumlah Pembayaran" id="swal-input3" class="swal2-input" pattern="[0-9,.]*">',
+                                        '<input type="number" placeholder="Jumlah Pembayaran" id="swal-input3" class="swal2-input" pattern="[0-9,.]*" required>',
                                         showCancelButton: true,
                                         preConfirm: () => {
                                         const metode = document.getElementById("swal-input2").value;
                                         const jumlah = document.getElementById("swal-input3").value;
-
+                                        if (!metode || !jumlah) {
+                                            Swal.showValidationMessage(`Harap Isi Data Terlebih Dahulu`);
+                                            return false; // Menambahkan return false agar SweetAlert tidak ditutup jika validasi gagal
+                                        }
                                         return [metode, jumlah, id];
                                         }
                                     }).then((result) => {
@@ -214,5 +222,62 @@
                                         }
                                     });
                                     }
-
                                 </script>
+                                <!-- script hapus -->
+                                <script>
+                                    function deleteData(id,id_pelanggan,id_paket) {
+                                        const url = "proses_delete.php";
+                                        const params = `ket=booking&id=${id}&id_pelanggan=${id_pelanggan}&id_paket=${id_paket}`;
+                                        console.log(params);
+                                        Swal.fire({
+                                            title: "Menghapus ini?",
+                                            text: "Kamu tidak dapat mengembalikan data!",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Ya, Hapus!"
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                const xhttp = new XMLHttpRequest();
+                                                xhttp.onreadystatechange = function () {
+                                                    if (this.readyState == 4) {
+                                                        if (this.status == 200) {
+                                                            console.log(this.responseText);
+                                                            try {
+                                                                const response = JSON.parse(this.responseText);
+                                                                if (response.success) {
+                                                                    Swal.fire({
+                                                                        title: "Terhapus!",
+                                                                        text: "Kamu Berhasil menghapus Data.",
+                                                                        icon: "success"
+                                                                    }).then(() => {
+                                                                        window.location.href = '?page=booking';
+                                                                    });
+                                                                } else {
+                                                                    Swal.fire({
+                                                                        icon: "error",
+                                                                        title: "Maaf...",
+                                                                        text: "Terjadi Kesalahan. Silakan Coba Lagi!"
+                                                                    });
+                                                                }
+                                                            } catch (error) {
+                                                                console.error("Error parsing JSON:", error);
+                                                            }
+                                                        } else {
+                                                            Swal.fire({
+                                                                icon: "error",
+                                                                title: "Maaf...",
+                                                                text: "Terjadi Kesalahan. Silakan Coba Lagi!"
+                                                            });
+                                                            console.error("HTTP request failed with status:", this.status);
+                                                        }
+                                                    }
+                                                };
+                                                xhttp.open("GET", `${url}?${params}`, true);
+                                                xhttp.send();
+                                            }
+                                        });
+                                    }
+                                </script>
+                                <?php } ?>

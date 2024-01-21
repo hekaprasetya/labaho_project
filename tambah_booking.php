@@ -129,12 +129,12 @@
                                 // mengambil nilai no_form terbaru
                                 $result = mysqli_fetch_assoc($sql);
 
-                                if (!empty($result['nomor_surat']) && !empty($result['tanggal'])) {
+                                if ($result['nomor_pesanan'] && $result['tanggal']) {
                                     $tanggal_terakhir = $result['tanggal'];
                                     $tahun_terakhir = date("Y", strtotime($tanggal_terakhir));
                                     $tahun_sekarang = date("Y");
                                     // Memecah string $nomor menggunakan delimiter "/"
-                                    $pecah_nomor = explode("/", $result['nomor_surat']);
+                                    $pecah_nomor = explode("/", $result['nomor_pesanan']);
 
                                     // Mengambil nilai terakhir dari array hasil pecahan sebagai $kode
                                     $kode1 = end($pecah_nomor);
