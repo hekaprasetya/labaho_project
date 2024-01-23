@@ -5,8 +5,27 @@
 <style>
     .wizard>.actions a,
     .wizard>.actions a:hover,
-    .wizard>.actions a:active {
-        padding: 0.55em 1em !important;
+    .wizard>.actions a:active {}
+
+    @media only screen and (min-width: 1200px) {
+        .wizard>.steps>ul>li {
+            width: 20%;
+
+        }
+    }
+
+    .wizard>.steps>ul {}
+
+    .wizard>.steps li.disabled a,
+    .wizard>.steps li.done a {
+        background-color: #DAD9FB !important;
+        color: #050C25;
+    }
+
+    .wizard>.steps {
+        width: 100%;
+        padding: 0;
+        margin: 0;
     }
 </style>
 
@@ -87,8 +106,15 @@
                             <div class="form-group input-group">
                                 <div class="input-group-prepend"><span class="input-group-text">Rp.</span>
                                 </div>
-                                <input type="text" name="harga_orang" class="form-control"
-                                    placeholder="Harga Paket Per-orang" pattern="[0-9,.]*" required>
+                                <input type="text" name="harga_orang" class="form-control" id="harga_orang"
+                                    placeholder="Harga Paket Per-orang" pattern="[0-9,.]*" required
+                                    oninput="hitungTotalBiaya()">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group input-group">
+                                <input type="number" name="jumlah_org" id="jumlah_org" class="form-control"
+                                    placeholder="Jumlah Orang" oninput="hitungTotalBiaya()" required>
                             </div>
                         </div>
                     </div>
@@ -129,7 +155,7 @@
                                 // mengambil nilai no_form terbaru
                                 $result = mysqli_fetch_assoc($sql);
 
-                                if ($result['nomor_pesanan'] && $result['tanggal']) {
+                                if (mysqli_num_rows($sql) > 0) {
                                     $tanggal_terakhir = $result['tanggal'];
                                     $tahun_terakhir = date("Y", strtotime($tanggal_terakhir));
                                     $tahun_sekarang = date("Y");
@@ -282,6 +308,31 @@
     // Nama paket dan durasi mapping
     var namaPaketDurasiMap = <?php echo json_encode(paket()); ?>;
 </script>
+<script>
+    // Fungsi untuk menghitung total biaya
+    function hitungTotalBiaya() {
+        // Ambil nilai harga per-orang
+        var hargaPerOrang = parseFloat(document.getElementsByName('harga_orang')[0].value.replace(/[^0-9\.]/g, ''));
+
+        // Ambil nilai jumlah orang
+        var jumlahOrang = parseInt(document.getElementsByName('jumlah_org')[0].value);
+
+        // Hitung total biaya
+        var totalBiaya = hargaPerOrang * jumlahOrang;
+
+        // Format hasil menjadi format mata uang
+        var formattedTotalBiaya = formatUang(totalBiaya);
+
+        // Set nilai total biaya pada input total_biaya
+        document.getElementsByName('total_biaya')[0].value = formattedTotalBiaya;
+    }
+
+    // Fungsi untuk format uang
+    function formatUang(amount) {
+        return 'Rp. ' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+</script>
+
 
 <script src="bootstrap/plugins/jquery-steps/build/jquery.steps.min.js"></script>
 <script src="bootstrap/plugins/jquery-validation/jquery.validate.min.js"></script>
