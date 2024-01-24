@@ -313,7 +313,7 @@
     function hitungTotalBiaya() {
         // Ambil nilai harga per-orang
         var hargaPerOrang = parseFloat(document.getElementsByName('harga_orang')[0].value.replace(/[^0-9\.]/g, ''));
-
+        console.log(hargaPerOrang);
         // Ambil nilai jumlah orang
         var jumlahOrang = parseInt(document.getElementsByName('jumlah_org')[0].value);
 
@@ -321,15 +321,18 @@
         var totalBiaya = hargaPerOrang * jumlahOrang;
 
         // Format hasil menjadi format mata uang
-        var formattedTotalBiaya = formatUang(totalBiaya);
+        // var formattedTotalBiaya = formatUang(totalBiaya);
 
         // Set nilai total biaya pada input total_biaya
-        document.getElementsByName('total_biaya')[0].value = formattedTotalBiaya;
+        document.getElementsByName('total_biaya')[0].value = totalBiaya;
     }
 
     // Fungsi untuk format uang
     function formatUang(amount) {
-        return 'Rp. ' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        var reverse = amount.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+        ribuan = ribuan.join('.').split('').reverse().join('');
+        return ribuan;
     }
 </script>
 

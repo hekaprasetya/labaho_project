@@ -113,7 +113,10 @@
                                                         foreach ($isi_row as $kolom) {
                                                             if($kolom == "status_pesanan") {
                                                                 echo ($row[$kolom] == "Pending") ?'<td class="red-text">'. $row[$kolom] .'</td>' : '<td class="green-text">'. $row[$kolom] .'</td>';
-                                                            } else {
+                                                            } else if ($kolom == 'total_biaya') {
+                                                                echo '<td>'. rupiah($row[$kolom]) .'</td>';
+                                                            }
+                                                            else {
                                                                 ?> <td><?= $row[$kolom] ?></td>  <?php
                                                             }
                                                         }
@@ -121,7 +124,7 @@
                                                             if (is_null($row['id_pembayaran'])) {
                                                             ?>
                                                             <td>
-                                                                <button type="button" class="btn small red waves-effect waves-light tooltipped" data-position="left" data-tooltip="Konformasi Pembayaran" onclick="bayar(<?= $id ?>)">
+                                                                <button type="button" class="btn small red waves-effect waves-light tooltipped" data-position="left" data-tooltip="Konformasi Pembayaran" onclick="bayar(<?= $id.','.$row['total_biaya'] ?>)">
                                                                 <i class="material-icons">warning</i></button>
                                                             </td>
                                                             <?php
@@ -150,7 +153,7 @@
                                 </div>
                                 <!-- script konfirmasi pembayaran -->
                                 <script>
-                                  function bayar(id) {
+                                  function bayar(id, totalBayar) {
                                     Swal.fire({
                                         title: "Konfirmasi Pembayaran",
                                         html:
@@ -168,7 +171,7 @@
                                         '<option value="Gopay">Gopay</option>' +
                                         '</optgroup>' +
                                         '</select>'+
-                                        '<input type="number" placeholder="Jumlah Pembayaran" id="swal-input3" class="swal2-input" pattern="[0-9,.]*" required>',
+                                        '<input type="number" value="'+totalBayar+'" placeholder="Jumlah Pembayaran" id="swal-input3" class="swal2-input" pattern="[0-9,.]*" required>',
                                         showCancelButton: true,
                                         preConfirm: () => {
                                         const metode = document.getElementById("swal-input2").value;

@@ -29,12 +29,10 @@ if (!empty($_SESSION['admin'])) {
         <!--[if lt IE 9]>
     <script src="../asset/js/html5shiv.min.js"></script>
     <![endif]-->
-        <script src="node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
         <!-- Global style START -->
         <link type="text/css" rel="stylesheet" href="asset/css/materialize.min.css">
-        <!--link type="text/css" rel="stylesheet" href="asset/css/jquery-ui.css"-->
+        <!-- <link type="text/css" rel="stylesheet" href="asset/css/jquery-ui.css"> -->
         <link type="text/css" rel="stylesheet" href="asset/css/style.css">
-        <script src="node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
         <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
         <style type="text/css">
             body {

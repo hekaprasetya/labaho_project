@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($query_pelanggan == TRUE) {
             $id_pelanggan = $config->insert_id;
             // INSERT tbl_paket_wisata
-            $query_paket = mysqli_query($config, "INSERT INTO tbl_paket_wisata (nama_paket, harga_orang, durasi_paket) VALUES ('$nama_paket', '$harga_orang', '$durasi_paket','$jumlah_org')");
+            $query_paket = mysqli_query($config, "INSERT INTO tbl_paket_wisata (nama_paket, harga_orang, durasi_paket, jumlah_org) VALUES ('$nama_paket', '$harga_orang', '$durasi_paket','$jumlah_org')");
             $id_paket = $config->insert_id;
             // INSERT tbl_pesanan
             $query_pesanan = mysqli_query($config, "INSERT INTO tbl_pesanan (nomor_pesanan,status_pesanan,total_biaya,id_pelanggan,id_paket) VALUES('$nomor_pesanan','$status','$total_biaya','$id_pelanggan','$id_paket')");

@@ -2,6 +2,102 @@
 date_default_timezone_set("Asia/Jakarta");
 
 
+
+// CHART ADMIN
+
+function chartAdmin($config, $table, $tgl)
+{
+
+    $queryCurr = mysqli_query($config, "SELECT $tgl FROM $table ORDER BY id DESC LIMIT 1");
+    $res = mysqli_fetch_assoc($queryCurr);
+    $tanggalTerbaru = $res[$tgl];
+    $currYear = date('Y');
+    $queryAk = mysqli_query($config, "SELECT $tgl FROM $table WHERE YEAR($tgl) = $currYear ORDER BY id ASC LIMIT 1");
+    $res2 = mysqli_fetch_assoc($queryAk);
+    $tanggalAwal = $res2[$tgl];
+    $current_date = date('Y-m', strtotime($tanggalTerbaru));
+    $firstDate = date('Y-m', strtotime($tanggalAwal));
+
+    // Buat array untuk menyimpan jumlah surat berdasarkan bulan
+    $hasilPerBulan = [];
+    // Ubah tanggal menjadi format bulan dan tahun saja
+    $dari_bulan_tahun = date('Y', strtotime($current_date));
+
+
+    // Ekstrak bulan dan tahun dari tanggal saat ini
+    list($tahun) = explode('-', $dari_bulan_tahun);
+    $query = "SELECT DATE_FORMAT($tgl, '%m') AS bulan,
+                    COUNT(*) AS data
+               FROM $table 
+               GROUP BY bulan";
+
+
+    $namaBulan = [
+        "01" => "Januari $tahun",
+        "02" => "Februari $tahun",
+        "03" => "Maret $tahun",
+        "04" => "April $tahun",
+        "05" => "Mei $tahun",
+        "06" => "Juni $tahun",
+        "07" => "Juli $tahun",
+        "08" => "Agustus $tahun",
+        "09" => "September $tahun",
+        10 => "Oktober $tahun",
+        11 => "November $tahun",
+        12 => "Desember $tahun"
+    ];
+    $result = mysqli_query($config, $query);
+
+    $data_kategori = array();
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data_kategori[] = array($namaBulan[$row['bulan']], $row['data']);
+    }
+
+    return $data_kategori;
+
+}
+function chartAdminPaket($config, $table, $tgl)
+{
+    $queryCurr = mysqli_query($config, "SELECT $tgl FROM $table ORDER BY id DESC LIMIT 1");
+    $res = mysqli_fetch_assoc($queryCurr);
+    $tanggalTerbaru = $res[$tgl];
+    $currYear = date('Y');
+    $queryAk = mysqli_query($config, "SELECT $tgl FROM $table WHERE YEAR($tgl) = $currYear ORDER BY id ASC LIMIT 1");
+    $res2 = mysqli_fetch_assoc($queryAk);
+    $tanggalAwal = $res2[$tgl];
+    $current_date = date('Y-m', strtotime($tanggalTerbaru));
+    $firstDate = date('Y-m', strtotime($tanggalAwal));
+
+    // Buat array untuk menyimpan jumlah pesanan berdasarkan paket
+    $hasilPerBulan = [];
+
+    // Ubah tanggal menjadi format bulan dan tahun saja
+    $dari_bulan_tahun = date('Y', strtotime($current_date));
+
+    // Ekstrak bulan dan tahun dari tanggal saat ini
+    list($tahun) = explode('-', $dari_bulan_tahun);
+
+    $query = "SELECT 
+                b.nama_paket,
+                b.durasi_paket,
+                COUNT(*) AS data
+              FROM $table a
+              JOIN tbl_paket_wisata b ON a.id_paket = b.id
+              WHERE YEAR($tgl) = $tahun
+              GROUP BY b.nama_paket, b.durasi_paket";
+
+    $result = mysqli_query($config, $query);
+
+    $data_kategori = array();
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data_kategori[] = array($row['nama_paket'] . ' - ' . $row['durasi_paket'], $row['data']);
+    }
+
+    return $data_kategori;
+}
+
 // Datasheet labaho PAKET
 function paket()
 {
@@ -459,4 +555,10 @@ function restore($host, $user, $pass, $dbname, $file)
                   </script>';
         }
     }
+}
+
+// FORMAT RUPIAH 
+function rupiah($angka)
+{
+    return "Rp " . number_format($angka, 0, ",", ".");
 }

@@ -974,3 +974,9 @@
     transform: translate(100%, 100%);
   }
 }
+@media only screen and (max-width: 600px) {
+  .chart-admin {
+    display: flex;
+    flex-direction: column;
+  }
+}
