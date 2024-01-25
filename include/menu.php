@@ -78,7 +78,7 @@ if (!empty($_SESSION['admin'])) {
                                     <ul>
                                         <li><a href="?page=booking">Booking</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="?page=">Calender</a></li>
+                                        <li><a href="?page=cal">Calender</a></li>
                                         <li class="divider"></li>
                                         <li><a href="?page=">Cek Kamar</a></li>
                                         <li class="divider"></li>

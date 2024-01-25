@@ -60,6 +60,11 @@ if (empty($_SESSION['admin'])) {
                     case 'usr':
                         include "user.php";
                         break;
+                    case 'cal':
+                        ?>
+                        <script>window.location.href = "bootstrap/calender.php"</script>
+                        <?php
+                        break;
                     case 'booking':
                         include "booking.php";
                         break;
@@ -597,6 +602,7 @@ if (empty($_SESSION['admin'])) {
                         $bulanPaket = chartAdminPaket($config, $table, $tgl);
                         $chartIdPaket = 2;
                         ?>
+
                         <div class="col s12 m6">
                             <div class="card" style="background: none; border-radius: 15px; padding:16px;">
                                 <div class="card-content card2 grey lighten-5" style="border-radius: 8px;">
@@ -617,7 +623,16 @@ if (empty($_SESSION['admin'])) {
                                 </div>
                             </div>
                         </div>
-
+                        <script src="node_modules/chart.js/dist/chart.umd.js"></script>
+                        <script src="asset/js/chartCustom.js"></script>
+                        <script>
+                            var dataBulan = <?= json_encode($bulan) ?>;
+                            var chartId = '<?= $chartId ?>';
+                            var dataBulanPaket = <?= json_encode($bulanPaket) ?>;
+                            var chartIdPaket = '<?= $chartIdPaket ?>';
+                            chartAdminJs(dataBulan, chartId);
+                            chartAdminJs(dataBulanPaket, chartIdPaket);
+                        </script>
                         <!-- CHART END -->
                         <?php if ($_SESSION['admin'] != 19 and $_SESSION['admin'] != 11) { ?>
                             <div class="col s12">
@@ -726,15 +741,7 @@ if (empty($_SESSION['admin'])) {
     <!-- Include Footer START -->
     <?php require('include/footer.php'); ?>
     <!-- Include Footer END -->
-    <script>
 
-        var dataBulan = <?= json_encode($bulan) ?>;
-        var chartId = '<?= $chartId ?>';
-        var dataBulanPaket = <?= json_encode($bulanPaket) ?>;
-        var chartIdPaket = '<?= $chartIdPaket ?>';
-        chartAdminJs(dataBulan, chartId);
-        chartAdminJs(dataBulanPaket, chartIdPaket);
-    </script>
 
 </body>
 <!-- Body END -->
