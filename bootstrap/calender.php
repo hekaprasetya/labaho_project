@@ -10,7 +10,7 @@ session_start();
 
     <link href="plugins/fullcalendar/css/fullcalendar.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="../node_modules/sweetalert2/dist/sweetalert2.min.css">
 </head>
 <style>
     .fc-content span {
@@ -241,6 +241,53 @@ session_start();
         <!--**********************************
         Scripts
     ***********************************-->
+        <script src="../node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+
+        <script>
+            // const Toast = Swal.mixin({
+            //     toast: true,
+            //     position: "top-end",
+            //     showConfirmButton: false,
+            //     timer: 3000,
+            //     timerProgressBar: true,
+            //     didOpen: (toast) => {
+            //         toast.onmouseenter = Swal.stopTimer;
+            //         toast.onmouseleave = Swal.resumeTimer;
+            //     }
+            // });
+
+            // o.$modal.find(".save-event").unbind("click").on("click", function () {
+            //     // Ambil data dari formulir
+            //     var eventData = {
+            //         title: i.find("input[name='title']").val(),
+            //         category: i.find("select[name='category'] option:checked").val(),
+            //         start: t,
+            //         end: n
+            //     };
+
+            //     // Kirim data ke server-side menggunakan AJAX
+            //     $.ajax({
+            //         url: 'proses_calender.php', // Sesuaikan dengan path ke skrip PHP Anda
+            //         method: 'POST',
+            //         data: eventData,
+            //         success: function (response) {
+            //             console.log('Data berhasil dikirim ke server');
+            //             Toast.fire({
+            //                 icon: "success",
+            //                 title: "Acara Berhasil Disimpan"
+            //             });
+            //         },
+            //         error: function (error) {
+            //             console.error('Gagal mengirim data ke server', error);
+            //             Toast.fire({
+            //                 icon: "error",
+            //                 title: "Terjadi Kesalahan..."
+            //             });
+            //         }
+            //     });
+            // });
+
+        </script>
         <script src="plugins/common/common.min.js"></script>
         <script src="js/custom.min.js"></script>
         <script src="js/settings.js"></script>
@@ -252,6 +299,7 @@ session_start();
         <script src="plugins/moment/moment.min.js"></script>
         <script src="plugins/fullcalendar/js/fullcalendar.min.js"></script>
         <script src="js/plugins-init/fullcalendar-init.js"></script>
+
 </body>
 
 </html>
