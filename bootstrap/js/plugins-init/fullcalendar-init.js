@@ -82,6 +82,66 @@ function updateCalendar(t, ev) {
   xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhttp.send(JSON.stringify(eventUpdate));
 }
+function addCalendar(data) {
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        try {
+          const response = JSON.parse(this.responseText);
+          if (response.success) {
+            Toast.fire({
+              icon: "success",
+              title: "Acara Berhasil Disimpan",
+            });
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: "Terjadi Kesalahan...",
+            });
+          }
+        } catch (error) {
+          console.error("Error parsing JSON response:", error);
+        }
+      } else {
+        console.error("HTTP request failed with status:", this.status);
+      }
+    }
+  };
+
+  xhttp.open("POST", "proses_calender.php?info=add", true);
+  xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhttp.send(JSON.stringify(data));
+}
+function addDropCalendar(data) {
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        try {
+          const response = JSON.parse(this.responseText);
+          if (response.success) {
+            Toast.fire({
+              icon: "success",
+              title: "Acara Berhasil Disimpan",
+            });
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: "Terjadi Kesalahan...",
+            });
+          }
+        } catch (error) {
+          console.error("Error parsing JSON response:", error);
+        }
+      } else {
+        console.error("HTTP request failed with status:", this.status);
+      }
+    }
+  };
+
+  xhttp.open("POST", "proses_calender.php?info=drop", true);
+  xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhttp.send(JSON.stringify(data));
+}
 !(function (e) {
   "use strict";
   var t = function () {
@@ -102,6 +162,7 @@ function updateCalendar(t, ev) {
       o && (i.className = [o]),
       this.$calendar.fullCalendar("renderEvent", i, !0),
       e("#drop-remove").is(":checked") && t.remove();
+    addDropCalendar(i);
   }),
     (t.prototype.onEventClick = function (t, n, a) {
       var o = this,
@@ -191,6 +252,14 @@ function updateCalendar(t, ev) {
               (i.find("input[name='beginning']").val(),
               i.find("input[name='ending']").val(),
               i.find("select[name='category'] option:checked").val());
+          var eventData = {
+            title: e,
+            start: t,
+            end: n,
+            allDay: !1,
+            className: a,
+          };
+          addCalendar(eventData);
           return (
             null !== e && 0 != e.length
               ? (o.$calendarObj.fullCalendar(
@@ -205,7 +274,11 @@ function updateCalendar(t, ev) {
                   !0
                 ),
                 o.$modal.modal("hide"))
-              : alert("You have to give a title to your event"),
+              : Swal.fire({
+                  icon: "warning",
+                  title: "Judul Kosong",
+                  text: "Anda harus memberikan judul pada acara Anda",
+                }),
             !1
           );
         }),

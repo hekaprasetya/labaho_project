@@ -68,6 +68,46 @@ if ($info === 'get') {
         // Jika data tidak valid atau kosong
         $response['success'] = false;
     }
+} else if ($info === 'drop') {
+
+
+    // Mendapatkan data JSON dari permintaan POST
+    $json_data = file_get_contents('php://input');
+
+    // Mengonversi data JSON menjadi array PHP
+    $data = json_decode($json_data, true);
+
+    // Menangani data sesuai kebutuhan
+    if (!empty($data)) {
+        $title = $data['title'];
+        $start = $data['start'];
+        $end = $data['start'];
+        $classNameArray = $data['className'];
+
+        // Pastikan array memiliki setidaknya satu elemen
+        if (!empty($classNameArray) && is_array($classNameArray)) {
+            // Ambil nilai pertama dari array
+            $firstClassName = $classNameArray[0];
+        }
+        $id_user = $_SESSION['id_user'];
+
+        $query = "INSERT INTO tbl_kalender (title, theme_color, start_date, end_date, id_user) VALUES (?, ?, ?, ?, ?)";
+        if (isset($query)) {
+            $stmt = mysqli_prepare($config, $query);
+            // Bind parameter untuk parameterized query
+            mysqli_stmt_bind_param($stmt, 'ssssi', $title, $firstClassName, $start, $end, $id_user);
+            if (mysqli_stmt_execute($stmt)) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+            }
+        } else {
+            $response['success'] = false;
+        }
+    } else {
+        // Jika data tidak valid atau kosong
+        $response['success'] = false;
+    }
 } else if ($info === 'update') {
     // Mendapatkan data JSON dari permintaan POST
     $json_data = file_get_contents('php://input');

@@ -16,6 +16,10 @@ session_start();
     .fc-content span {
         color: white !important;
     }
+
+    .external-event.bg-success.ui-draggable.ui-draggable-handle {
+        color: white !important;
+    }
 </style>
 
 <body>
@@ -136,13 +140,13 @@ session_start();
                                         <div id="external-events" class="m-t-20">
                                             <p>Seret dan letakkan acara Anda atau klik di kalender</p>
                                             <div class="external-event bg-primary text-white" data-class="bg-primary"><i
-                                                    class="fa fa-move"></i>New Theme Release</div>
+                                                    class="fa fa-move"></i>Keberangkatan</div>
                                             <div class="external-event bg-success text-white" data-class="bg-success"><i
-                                                    class="fa fa-move"></i>My Event</div>
+                                                    class="fa fa-move"></i>Cek Kamar</div>
                                             <div class="external-event bg-warning text-white" data-class="bg-warning"><i
                                                     class="fa fa-move"></i>Meet manager</div>
-                                            <div class="external-event bg-dark text-white" data-class="bg-dark"><i
-                                                    class="fa fa-move"></i>Create New theme</div>
+                                            <div class="external-event bg-danger text-white" data-class="bg-danger"><i
+                                                    class="fa fa-move"></i>Cek Kapal</div>
                                         </div>
                                         <!-- checkbox -->
                                         <div class="checkbox m-t-40">
