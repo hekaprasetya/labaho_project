@@ -169,7 +169,7 @@ session_start();
                                                     <button type="button" class="btn btn-default waves-effect"
                                                         data-dismiss="modal">Tutup</button>
                                                     <button type="button"
-                                                        class="btn btn-success save-event waves-effect waves-light">Membuat
+                                                        class="btn btn-info save-event waves-effect waves-light">Membuat
                                                         acara</button>
                                                     <button type="button"
                                                         class="btn btn-danger delete-event waves-effect waves-light"

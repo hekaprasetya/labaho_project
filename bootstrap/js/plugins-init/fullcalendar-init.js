@@ -1,3 +1,87 @@
+const xhttp = new XMLHttpRequest();
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
+function getData(o) {
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        try {
+          const events = JSON.parse(this.responseText);
+          o.$calendarObj.fullCalendar("renderEvents", events, true);
+        } catch (error) {
+          console.error("Error parsing JSON response:", error);
+        }
+      } else {
+        console.error("HTTP request failed with status:", this.status);
+      }
+    }
+  };
+
+  xhttp.open("GET", "proses_calender.php?info=get", true);
+  xhttp.send();
+}
+function delCalendar(t) {
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        Toast.fire({
+          icon: "success",
+          title: "Acara Berhasil Dihapus",
+        });
+      } else {
+        console.error("HTTP request failed with status:", this.status);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Menghapus Data",
+          text: "Terjadi kesalahan!",
+        }).then(() => {
+          location.reload();
+        });
+      }
+    }
+  };
+  xhttp.open("POST", "proses_calender.php?info=delete", true);
+  xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhttp.send(JSON.stringify({ id: t.id }));
+}
+function updateCalendar(t, ev) {
+  var eventUpdate = {
+    title: ev,
+    id: t.id,
+  };
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        // Tanggapi dari server (jika diperlukan)
+        Toast.fire({
+          icon: "success",
+          title: "Acara Berhasil Diperbarui",
+        });
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Terjadi Kesalahan...",
+        }).then(() => {
+          location.reload();
+        });
+        // console.error("HTTP request failed with status:", this.status);
+      }
+    }
+  };
+
+  xhttp.open("GET", "proses_calender.php?info=update", true);
+  xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhttp.send(JSON.stringify(eventUpdate));
+}
 !(function (e) {
   "use strict";
   var t = function () {
@@ -48,11 +132,14 @@
             o.$calendarObj.fullCalendar("removeEvents", function (e) {
               return e._id == t._id;
             }),
-              o.$modal.modal("hide");
+              delCalendar(t);
+            o.$modal.modal("hide");
           }),
         o.$modal.find("form").on("submit", function () {
+          var ev = i.find("input[type=text]").val();
+          updateCalendar(t, ev);
           return (
-            (t.title = i.find("input[type=text]").val()),
+            (t.title = ev),
             o.$calendarObj.fullCalendar("updateEvent", t),
             o.$modal.modal("hide"),
             !1
@@ -69,19 +156,19 @@
         i
           .find(".row")
           .append(
-            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Nama Acara</label><input class='form-control' placeholder='Masukkan Nama Acara' type='text' name='title'/></div></div>"
+            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Event Name</label><input class='form-control' placeholder='Insert Event Name' type='text' name='title'/></div></div>"
           )
           .append(
-            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Kategori</label><select class='form-control' name='category'></select></div></div>"
+            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Category</label><select class='form-control' name='category'></select></div></div>"
           )
           .find("select[name='category']")
-          .append("<option value='bg-danger'>Merah</option>")
-          .append("<option value='bg-success'>Hijau</option>")
-          .append("<option value='bg-dark'>Hitam</option>")
-          .append("<option value='bg-primary'>Ungu</option>")
+          .append("<option value='bg-danger'>Danger</option>")
+          .append("<option value='bg-success'>Success</option>")
+          .append("<option value='bg-dark'>Dark</option>")
+          .append("<option value='bg-primary'>Primary</option>")
           .append("<option value='bg-pink'>Pink</option>")
-          .append("<option value='bg-info'>Biru</option>")
-          .append("<option value='bg-warning'>Kuning</option></div></div>"),
+          .append("<option value='bg-info'>Info</option>")
+          .append("<option value='bg-warning'>Warning</option></div></div>"),
         o.$modal
           .find(".delete-event")
           .hide()
@@ -104,86 +191,23 @@
               (i.find("input[name='beginning']").val(),
               i.find("input[name='ending']").val(),
               i.find("select[name='category'] option:checked").val());
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-          });
-          var eventData = {
-            title: e,
-            start: t,
-            end: n,
-            allDay: !1,
-            className: a,
-          };
-          console.log(eventData);
-          if (e !== null && e.length > 0) {
-            o.$calendarObj.fullCalendar(
-              "renderEvent",
-              {
-                title: e,
-                start: t,
-                end: n,
-                allDay: !1,
-                className: a,
-              },
-              !0
-            );
-
-            o.$modal.modal("hide");
-
-            // Kirim data ke server
-            const xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-              if (this.readyState == 4) {
-                if (this.status == 200) {
-                  console.log(this.responseText);
-                  try {
-                    const response = JSON.parse(this.responseText);
-                    if (response.success) {
-                      Toast.fire({
-                        icon: "success",
-                        title: "Acara Berhasil Disimpan",
-                      });
-                    } else {
-                      Toast.fire({
-                        icon: "error",
-                        title: "Terjadi Kesalahan...",
-                      });
-                    }
-                  } catch (error) {
-                    console.error("Error parsing JSON response:", error);
-                  }
-                } else {
-                  console.error(
-                    "HTTP request failed with status:",
-                    this.status
-                  );
-                }
-              }
-            };
-
-            xhttp.open("POST", "proses_calender.php", true);
-            xhttp.setRequestHeader(
-              "Content-Type",
-              "application/json;charset=UTF-8"
-            );
-            xhttp.send(JSON.stringify(eventData));
-          } else {
-            Swal.fire({
-              icon: "info",
-              title: "Judul Kosong",
-              text: "Anda harus memberikan judul pada acara Anda",
-            });
-          }
-
-          return false;
+          return (
+            null !== e && 0 != e.length
+              ? (o.$calendarObj.fullCalendar(
+                  "renderEvent",
+                  {
+                    title: e,
+                    start: t,
+                    end: n,
+                    allDay: !1,
+                    className: a,
+                  },
+                  !0
+                ),
+                o.$modal.modal("hide"))
+              : alert("You have to give a title to your event"),
+            !1
+          );
         }),
         o.$calendarObj.fullCalendar("unselect");
     }),
@@ -204,25 +228,9 @@
       this.enableDrag();
       var t = new Date(),
         n = (t.getDate(), t.getMonth(), t.getFullYear(), new Date(e.now())),
-        a = [
-          {
-            title: "Hey!",
-            start: new Date(e.now() + 158e6),
-            className: "bg-dark",
-          },
-          {
-            title: "See John Deo",
-            start: n,
-            end: n,
-            className: "bg-danger",
-          },
-          {
-            title: "Buy a Theme",
-            start: new Date(e.now() + 338e6),
-            className: "bg-primary",
-          },
-        ],
+        a = [],
         o = this;
+      getData(o);
       (o.$calendarObj = o.$calendar.fullCalendar({
         slotDuration: "00:15:00",
         minTime: "08:00:00",
