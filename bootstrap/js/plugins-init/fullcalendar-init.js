@@ -3,7 +3,7 @@ const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
   showConfirmButton: false,
-  timer: 3000,
+  timer: 2000,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.onmouseenter = Swal.stopTimer;
@@ -91,7 +91,7 @@ function addCalendar(data) {
           if (response.success) {
             Toast.fire({
               icon: "success",
-              title: "Acara Berhasil Disimpan",
+              title: "Acara Berhasil Ditambahkan",
             });
           } else {
             Toast.fire({
@@ -121,7 +121,7 @@ function addDropCalendar(data) {
           if (response.success) {
             Toast.fire({
               icon: "success",
-              title: "Acara Berhasil Disimpan",
+              title: "Acara Berhasil Ditambahkan",
             });
           } else {
             Toast.fire({
@@ -191,15 +191,15 @@ function addDropCalendar(data) {
           .unbind("click")
           .on("click", function () {
             o.$calendarObj.fullCalendar("removeEvents", function (e) {
+              delCalendar(t);
               return e._id == t._id;
             }),
-              delCalendar(t);
-            o.$modal.modal("hide");
+              o.$modal.modal("hide");
           }),
         o.$modal.find("form").on("submit", function () {
           var ev = i.find("input[type=text]").val();
-          updateCalendar(t, ev);
           return (
+            updateCalendar(t, ev),
             (t.title = ev),
             o.$calendarObj.fullCalendar("updateEvent", t),
             o.$modal.modal("hide"),
@@ -217,19 +217,18 @@ function addDropCalendar(data) {
         i
           .find(".row")
           .append(
-            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Event Name</label><input class='form-control' placeholder='Insert Event Name' type='text' name='title'/></div></div>"
+            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Acara</label><input class='form-control' placeholder='Masukkan nama acara' type='text' name='title'/></div></div>"
           )
           .append(
-            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Category</label><select class='form-control' name='category'></select></div></div>"
+            "<div class='col-md-6'><div class='form-group'><label class='control-label'>Kategori</label><select class='form-control' name='category'></select></div></div>"
           )
           .find("select[name='category']")
-          .append("<option value='bg-danger'>Danger</option>")
-          .append("<option value='bg-success'>Success</option>")
-          .append("<option value='bg-dark'>Dark</option>")
-          .append("<option value='bg-primary'>Primary</option>")
-          .append("<option value='bg-pink'>Pink</option>")
-          .append("<option value='bg-info'>Info</option>")
-          .append("<option value='bg-warning'>Warning</option></div></div>"),
+          .append("<option value='bg-danger'>Merah</option>")
+          .append("<option value='bg-success'>hijau</option>")
+          .append("<option value='bg-dark'>Hitam</option>")
+          .append("<option value='bg-primary'>Ungu</option>")
+          .append("<option value='bg-info'>Biru</option>")
+          .append("<option value='bg-warning'>Kuning</option></div></div>"),
         o.$modal
           .find(".delete-event")
           .hide()
@@ -259,7 +258,7 @@ function addDropCalendar(data) {
             allDay: !1,
             className: a,
           };
-          addCalendar(eventData);
+
           return (
             null !== e && 0 != e.length
               ? (o.$calendarObj.fullCalendar(
@@ -271,6 +270,7 @@ function addDropCalendar(data) {
                     allDay: !1,
                     className: a,
                   },
+                  addCalendar(eventData),
                   !0
                 ),
                 o.$modal.modal("hide"))
