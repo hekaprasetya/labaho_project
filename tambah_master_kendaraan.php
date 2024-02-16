@@ -8,7 +8,7 @@ if (empty($_SESSION['admin'])) {
     if (isset($_REQUEST['submit'])) {
         if (empty($_REQUEST['kendaraan']) || empty($_REQUEST['nopol'])) {
             $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
-?>
+            ?>
             <script language="javascript">
                 window.history.back();
             </script>
@@ -17,23 +17,17 @@ if (empty($_SESSION['admin'])) {
             $kendaraan = $_REQUEST['kendaraan'];
             $nopol = $_REQUEST['nopol'];
 
-            $query = mysqli_query($config, "INSERT INTO master_kendaraan (kendaraan, nopol)
-                    VALUES('$kendaraan', '$nopol')");
-
-            if ($query === true) {
-                $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
-                $last_insert_id = mysqli_insert_id($config);
-            ?>
-                <script language="javascript">
-                    window.location.href = "./admin.php?page=master_kendaraan";
-                </script>
-            <?php
+            // $query = mysqli_query($config, "INSERT INTO master_kendaraan (kendaraan, nopol)
+            //         VALUES('$kendaraan', '$nopol')");
+            $res = new DataBaseHandler($config);
+            $data = ['kendaraan', 'nopol'];
+            $values = [$kendaraan, $nopol];
+            $hasil = $res->insert('master_kendaraan', $data, $values);
+            if ($hasil['success'] == true) {
+                sweetSucc('Data Berhasil Ditambahkan.', '?page=master_kendaraan');
             } else {
-                $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-            ?><script language="javascript">
-                    window.history.back();
-                </script>
-    <?php
+                echo $hasil['error'];
+                sweetError();
             }
         }
     }
@@ -47,7 +41,8 @@ if (empty($_SESSION['admin'])) {
                     <div class="nav-wrapper blue darken-2">
                         <div class="col m7">
                             <ul class="left">
-                                <li class="waves-effect waves-light"><a href="#" class="judul"><i class="material-icons md-3">directions_car</i> Tambah Kendaraan</a></li>
+                                <li class="waves-effect waves-light"><a href="#" class="judul"><i
+                                            class="material-icons md-3">directions_car</i> Tambah Kendaraan</a></li>
                             </ul>
                         </div>
                     </div>
@@ -115,8 +110,11 @@ if (empty($_SESSION['admin'])) {
                     <?php
                     if (isset($_SESSION['kendaraan'])) {
                         $kendaraan = $_SESSION['kendaraan'];
-                    ?><div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text"><?= $kendaraan ?></div>
-                    <?php
+                        ?>
+                        <div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">
+                            <?= $kendaraan ?>
+                        </div>
+                        <?php
                         unset($_SESSION['kendaraan']);
                     }
                     ?>
@@ -128,8 +126,11 @@ if (empty($_SESSION['admin'])) {
                     <?php
                     if (isset($_SESSION['nopol'])) {
                         $nopol = $_SESSION['nopol'];
-                    ?><div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text"><?= $nopol ?></div>
-                    <?php
+                        ?>
+                        <div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">
+                            <?= $nopol ?>
+                        </div>
+                        <?php
                         unset($_SESSION['nopol']);
                     }
                     ?>
@@ -138,10 +139,13 @@ if (empty($_SESSION['admin'])) {
 
                 <div class="row">
                     <div class="col 6">
-                        <button type="submit" name="submit" class="btn small blue waves-effect waves-light">SIMPAN <i class="material-icons">done</i></button>
+                        <button type="submit" name="submit" class="btn small blue waves-effect waves-light">SIMPAN <i
+                                class="material-icons">done</i></button>
                     </div>
                     <div class="col 6">
-                        <button type="reset" onclick="window.history.back();" class="btn small deep-orange waves-effect waves-light">BATAL <i class="material-icons">clear</i></button>
+                        <button type="reset" onclick="window.history.back();"
+                            class="btn small deep-orange waves-effect waves-light">BATAL <i
+                                class="material-icons">clear</i></button>
                     </div>
                 </div>
             </div>
@@ -150,5 +154,5 @@ if (empty($_SESSION['admin'])) {
         <!-- FORM END -->
     </div>
     <!-- ROW END -->
-<?php
+    <?php
 }

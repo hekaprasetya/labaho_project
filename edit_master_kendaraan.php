@@ -8,30 +8,21 @@ if (empty($_SESSION['admin'])) {
     if (isset($_REQUEST['submit'])) {
         //validasi form kosong
         if (empty($_REQUEST['kendaraan']) || empty($_REQUEST['nopol'])) {
-            $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
-?>
-            <script language="javascript">
-                window.history.back();
-            </script>
-            <?php
+            $text = 'ERROR! Semua form wajib diisi';
+            sweetError($text);
         } else {
 
             $id_kendaraan = $_REQUEST['id_kendaraan'];
             $kendaraan = $_REQUEST['kendaraan'];
             $nopol = $_REQUEST['nopol'];
-
-            $query = mysqli_query($config, "UPDATE master_kendaraan SET kendaraan='$kendaraan', nopol='$nopol' WHERE id_kendaraan='$id_kendaraan'");
-            if ($query === true) {
-                $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
-                header("location: ./admin.php?page=master_kendaraan");
-                exit();
+            $value = [$kendaraan, $nopol];
+            $update = new DataBaseHandler($config);
+            $res = $update->update('master_kendaraan', ['kendaraan', 'nopol'], $value, 'id_kendaraan', $id_kendaraan);
+            if ($res['success'] == true) {
+                sweetSucc('Data Berhasil Diperbarui.', '?page=master_kendaraan');
             } else {
-                $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-            ?>
-                <script language="javascript">
-                    window.history.back();
-                </script>
-            <?php
+                echo $res['error'];
+                sweetError();
             }
         }
     } else {
@@ -39,7 +30,7 @@ if (empty($_SESSION['admin'])) {
         $query = mysqli_query($config, "SELECT * FROM master_kendaraan WHERE id_kendaraan='$id_kendaraan'");
         if (mysqli_num_rows($query) > 0) {
             while ($row = $query->fetch_assoc()) {
-            ?>
+                ?>
 
                 <!-- Row Start -->
                 <div class="row">
@@ -50,7 +41,8 @@ if (empty($_SESSION['admin'])) {
                                 <div class="nav-wrapper blue darken-2">
                                     <div class="col m7">
                                         <ul class="left">
-                                            <li class="waves-effect waves-light"><a href="#" class="judul"><i class="material-icons md-3">directions_car</i> Edit Kendaraan</a></li>
+                                            <li class="waves-effect waves-light"><a href="#" class="judul"><i
+                                                        class="material-icons md-3">directions_car</i> Edit Kendaraan</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -113,12 +105,16 @@ if (empty($_SESSION['admin'])) {
 
                             <div class="input-field col s12">
                                 <i class="material-icons prefix md-prefix">directions_car</i>
-                                <input id="kendaraan" type="text" name="kendaraan" class="validate" value="<?php echo $row['kendaraan']; ?>">
+                                <input id="kendaraan" type="text" name="kendaraan" class="validate"
+                                    value="<?php echo $row['kendaraan']; ?>">
                                 <?php
                                 if (isset($_SESSION['kendaraan'])) {
                                     $kendaraan = $_SESSION['kendaraan'];
-                                ?><div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text"><?= $kendaraan ?></div>
-                                <?php
+                                    ?>
+                                    <div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">
+                                        <?= $kendaraan ?>
+                                    </div>
+                                    <?php
                                     unset($_SESSION['kendaraan']);
                                 }
                                 ?>
@@ -126,12 +122,16 @@ if (empty($_SESSION['admin'])) {
                             </div>
                             <div class="input-field col s12">
                                 <i class="material-icons prefix md-prefix">fiber_pin</i>
-                                <input id="nopol" type="text" name="nopol" class="validate" value="<?php echo $row['nopol']; ?>" required>
+                                <input id="nopol" type="text" name="nopol" class="validate" value="<?php echo $row['nopol']; ?>"
+                                    required>
                                 <?php
                                 if (isset($_SESSION['nopol'])) {
                                     $nopol = $_SESSION['nopol'];
-                                ?><div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text"><?= $nopol ?></div>
-                                <?php
+                                    ?>
+                                    <div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">
+                                        <?= $nopol ?>
+                                    </div>
+                                    <?php
                                     unset($_SESSION['nopol']);
                                 }
                                 ?>
@@ -140,10 +140,13 @@ if (empty($_SESSION['admin'])) {
 
                             <div class="row">
                                 <div class="col 6">
-                                    <button type="submit" name="submit" class="btn small blue waves-effect waves-light">SIMPAN <i class="material-icons">done</i></button>
+                                    <button type="submit" name="submit" class="btn small blue waves-effect waves-light">SIMPAN <i
+                                            class="material-icons">done</i></button>
                                 </div>
                                 <div class="col 6">
-                                    <button type="reset" onclick="window.history.back();" class="btn small deep-orange waves-effect waves-light">BATAL <i class="material-icons">clear</i></button>
+                                    <button type="reset" onclick="window.history.back();"
+                                        class="btn small deep-orange waves-effect waves-light">BATAL <i
+                                            class="material-icons">clear</i></button>
                                 </div>
                             </div>
 
@@ -153,7 +156,7 @@ if (empty($_SESSION['admin'])) {
                     <!-- FORM END -->
                 </div>
                 <!-- ROW END -->
-<?php
+                <?php
             }
         } else {
             $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';

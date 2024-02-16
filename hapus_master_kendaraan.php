@@ -22,7 +22,7 @@ if (empty($_SESSION['admin'])) {
     $query = mysqli_query($config, "SELECT * FROM master_kendaraan WHERE id_kendaraan='$id_kendaraan'");
     if (mysqli_num_rows($query) > 0) {
         while ($row = $query->fetch_assoc()) {
-?>
+            ?>
             <!-- Row form Start -->
             <div class="row jarak-card">
                 <div class="col m12">
@@ -38,19 +38,27 @@ if (empty($_SESSION['admin'])) {
                                     <tr>
                                         <td width="13%">Nama Kendaraan </td>
                                         <td width="1%">:</td>
-                                        <td width="86%"><?= $row['kendaraan'] ?></td>
+                                        <td width="86%">
+                                            <?= $row['kendaraan'] ?>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td width="13%">Plat Nomer </td>
                                         <td width="1%">:</td>
-                                        <td width="86%"><?= $row['nopol'] ?></td>
+                                        <td width="86%">
+                                            <?= $row['nopol'] ?>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="card-action">
-                            <a href="?page=master_kendaraan&act=del&submit=yes&id_kendaraan= <?= $row['id_kendaraan'] ?>" class="btn small deep-orange waves-effect waves-light white-text">HAPUS <i class="material-icons">delete</i></a>
-                            <a href="./admin.php?page=master_kendaraan" class="btn small blue waves-effect waves-light white-text">BATAL <i class="material-icons">clear</i></a>
+                            <a href="?page=master_kendaraan&act=del&submit=yes&id_kendaraan= <?= $row['id_kendaraan'] ?>"
+                                class="btn small deep-orange waves-effect waves-light white-text">HAPUS <i
+                                    class="material-icons">delete</i></a>
+                            <a href="./admin.php?page=master_kendaraan"
+                                class="btn small blue waves-effect waves-light white-text">BATAL <i
+                                    class="material-icons">clear</i></a>
                         </div>
                     </div>
                 </div>
@@ -60,20 +68,13 @@ if (empty($_SESSION['admin'])) {
             if (isset($_REQUEST['submit'])) {
                 $id_kendaraan = $_REQUEST['id_kendaraan'];
 
-                $query = mysqli_query($conn, "DELETE FROM master_kendaraan WHERE id_kendaraan='$id_kendaraan'");
-
-                if ($query === true) {
-                    $_SESSION['succDel'] = 'SUKSES! Data berhasil dihapus ';
-            ?><script language="javascript">
-                        window.location.href = "./admin.php?page=master_kendaraan";
-                    </script>
-                <?php
+                $data = new DataBaseHandler($config);
+                $hasil = $data->del('master_kendaraan', 'id_kendaraan', $id_kendaraan);
+                if ($hasil['success'] == true) {
+                    sweetSucc('Data Berhasil Dihapus.', '?page=master_kendaraan');
                 } else {
-                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-                ?><script language="javascript">
-                        window.location.href = "./admin.php?page=master_kendaraan";
-                    </script>
-<?php
+                    echo $hasil['error'];
+                    sweetError();
                 }
             }
         }

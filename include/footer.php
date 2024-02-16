@@ -28,13 +28,9 @@ if (!empty($_SESSION['admin'])) {
     <!-- Footer END -->
 
     <!-- Javascript START -->
-    <script type="text/javascript" src="asset/js/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="asset/js/materialize.min.js"></script>
     <script type="text/javascript" src="asset/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="asset/js/jquery.autocomplete.min.js"></script>
-    <script data-pace-options='{ "ajax": false }' src='asset/js/pace.min.js'></script>
-    <script src="node_modules/chart.js/dist/chart.umd.js"></script>
-    <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+
+    <script src="asset/js/main.js"></script>
     <script src="asset/js/chartCustom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -102,10 +98,7 @@ if (!empty($_SESSION['admin'])) {
             }, 500);
         }
     </script>
-    <script>
 
-
-    </script>
     <!-- Javascript END -->
 
     <?php
