@@ -562,3 +562,29 @@ function rupiah($angka)
 {
     return "Rp " . number_format($angka, 0, ",", ".");
 }
+function sweetSucc($a, $dir)
+{
+    ?>
+    <script>
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "<?= $a ?>",
+        }).then(() => {
+            window.location.href = "<?= $dir ?>";
+        });
+    </script>
+    <?php
+}
+function sweetError($a = 'Terjadi Kesalahan. Silakan Coba Lagi!')
+{
+    ?>
+    <script>
+        Swal.fire({
+            icon: "error",
+            title: "Maaf...",
+            text: "<?= $a ?>",
+        });
+    </script>
+    <?php
+}

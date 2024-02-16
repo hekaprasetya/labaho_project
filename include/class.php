@@ -1,4 +1,120 @@
 <?php
+class DataBaseHandler
+{
+    private $config;
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
+    public function get($select = '*', $tbl, $where = '', $order = 'id DESC')
+    {
+
+        $whereClause = !empty($where) ? "WHERE $where" : '';
+        $query = "SELECT $select FROM $tbl $whereClause ORDER BY $order";
+        $result = mysqli_query($this->config, $query);
+
+        if (mysqli_num_rows($result) > 0) {
+            // Inisialisasi array untuk menyimpan data acara
+            $response = array();
+
+            // Loop untuk membaca hasil query
+            while ($rowData = mysqli_fetch_assoc($result)) {
+                $response[] = $rowData;
+            }
+
+            return $response;
+        } else {
+            return null;
+        }
+    }
+
+    public function insert($tbl, $data, $values)
+    {
+        // Logika untuk menyisipkan data ke dalam tabel
+
+        if (is_array($data) || is_array($values)) {
+            // Membuat string kolom
+            $valuesString = implode(', ', array_fill(0, count($data), '?'));
+            $columnNames = implode(', ', $data);
+            $query = "INSERT INTO $tbl ($columnNames) VALUES ($valuesString)";
+        } else {
+
+            $query = "INSERT INTO $tbl ($data) VALUES ($values)";
+        }
+        if (isset($query)) {
+            $stmt = mysqli_prepare($this->config, $query);
+            // Bind parameter untuk parameterized query
+            mysqli_stmt_bind_param($stmt, str_repeat('s', count($data)), ...$values);
+            if (mysqli_stmt_execute($stmt)) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['error'] = mysqli_error($this->config);
+            }
+        }
+        return $response;
+    }
+    public function update($table, $column, $values, $where = 'id', $id)
+    {
+        // Logika untuk memperbarui data dalam tabel
+
+        if (is_array($column) || is_array($values)) {
+            // Mengonversi kunci array menjadi nama kolom
+            $columnNames = implode(' = ?, ', $column) . ' = ?';
+
+            $query = "UPDATE $table SET $columnNames WHERE $where = ?";
+            $params = array_merge($values, array($id));
+        } else {
+            $query = "UPDATE $table SET $column = ? WHERE $where = ?";
+            $stmt = mysqli_prepare($this->config, $query);
+            // Bind parameter untuk parameterized query
+            $params = [$values, $id];
+            $column = [1];
+        }
+        if (isset($query)) {
+            $stmt = mysqli_prepare($this->config, $query);
+            // Bind parameter untuk parameterized query
+            mysqli_stmt_bind_param($stmt, str_repeat('s', count($column)) . 's', ...$params);
+            if (mysqli_stmt_execute($stmt)) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['error'] = mysqli_error($this->config);
+            }
+        }
+        return $response;
+    }
+
+
+    public function del($table, $column = 'id', $conditions)
+    {
+        // Logika untuk menghapus data dari tabel
+        if (is_array($table)) {
+            // Jika $tbl adalah array, lakukan looping untuk menghapus tabel
+            foreach ($table as $index => $tables) {
+                // Membuat klausa WHERE untuk setiap tabel
+                $kolom = $column[$index];
+                $values = $conditions[$index];
+
+                $query = "DELETE FROM $tables WHERE $kolom = '$values'";
+                $res = mysqli_query($this->config, $query);
+            }
+        } else {
+
+            $query = "DELETE FROM $table WHERE $column = '$conditions'";
+            $res = mysqli_query($this->config, $query);
+
+        }
+        // Mengirim respons kembali ke klien
+        if ($res == TRUE) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['error'] = mysqli_error($this->config);
+        }
+        return $response;
+    }
+}
 class CRUD
 {
     public $id,

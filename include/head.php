@@ -30,6 +30,12 @@ if (!empty($_SESSION['admin'])) {
     <script src="../asset/js/html5shiv.min.js"></script>
     <![endif]-->
         <!-- Global style START -->
+        <script type="text/javascript" src="asset/js/jquery.autocomplete.min.js"></script>
+        <script data-pace-options='{ "ajax": false }' src='asset/js/pace.min.js'></script>
+        <script src="node_modules/chart.js/dist/chart.umd.js"></script>
+        <script type="text/javascript" src="asset/js/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="asset/js/materialize.min.js"></script>
+        <script src="node_modules/sweetalert2/dist/sweetalert2.min.js" type="text/javascript"></script>
         <link type="text/css" rel="stylesheet" href="asset/css/materialize.min.css">
         <!-- <link type="text/css" rel="stylesheet" href="asset/css/jquery-ui.css"> -->
         <link type="text/css" rel="stylesheet" href="asset/css/style.css">
